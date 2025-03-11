@@ -1,0 +1,43 @@
+Difference Between CJS and MJS(ES Module)
+CJS :- older way but ye abhi bhi follow hota hain, we use require and module.exports,synchronous,non-strict mode
+
+MJS:- Newer way,we use import export here, Asynchronous,strict mode
+
+
+
+
+JS: it is a single threaded synchronous language
+process,threaded,multithreaded,synchronous,single core, octa core, parellelism,concurrent
+
+
+Single proceesor :- it handles one task at a time. suppose we are doing 3 task:- youtube chala rha hu, gana sun rha hu and pubg khel rha hu. and my laptop is single processor and laptop did all these tasks how?
+Here we use Context switching, it play youtube for some time , then switch to music for sometime and then pubg for some time and repeat these tasks. Thius context switching is so fast that we cant see it(so we think all these are running together).
+so we can say that these tasks are running concurrently(thodi der ye chal rha fir thodi der wo cahl rha fir thodi der ye chal raha).
+
+// Now the question then why we switched to octa core?
+suppose we have 20 tasks to do, after running 1st task for sometime it switches to second and till it goes to 20 then it again comes for 1st. here it takes more time then we fell like hang or slow
+
+
+Dual Core Processor :- it has two processor. suppose we are running youtube and Pubg then 1processor handle youtube and other pubg. Her no context switching occurrs. here these tasks are running parallely(parallelism). Now suppose we add 2 more tasks coding,music player. Then it gives 2-2 tasks to each processor. Now here Context switching occur and both concurrent and parallelism occurs
+
+
+// Suppose i download pubg 20gb. and my ram is 8gb. How pubg comes inside 8gb RAM?
+Developers writes code in chunks.Now if we runs the game then it is not necessary to load all the files of 20gb.It loads the particular portion of the Game in RAM that is running currently. it is also known as virtual memory. This is why we Run big tasks in less memory
+
+
+Octa Core processor :- it handles 8 tasks at a time. suppose we have given 20 task to it then how it is handling all these tasks
+
+
+
+NOTE:- For a single process multiple processors can be allocated.
+
+process: it means a task which we have to execute, it takes memory , CPU usage whenever we execute a process. Inside a process multiple thread is present. Thread is a subset of process or we can say it is smallest unit of task
+
+why we need multiple thread?
+we have a process inside it we have to do three tasks (i)file ko download kr rha hu (ii)print kohli photo (iii)file transfer kr rha hu. OS assigns each task to a thread. Now if we have single core processor then here context switch happens in thread. Now if we have Octa core then for each thread one processor gets allocated so here all threads works in parallel
+
+
+
+
+node js is also a single threaded but it has capabilities to do multiple threading, with the help of libuv
+In Browser it has V8 engine which is single threaded but with the help of Web APIs browser, does async task (Multiple threading)
