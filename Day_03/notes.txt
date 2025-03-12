@@ -1,0 +1,31 @@
+In Node js we have V8 engine
+What are the tasks that V8 engine or JS cant do?
+=> Timer related things(setTimeout(),setInterval()), File access, Network call(data fetch, connect with DB).All these Tasks is handled by Operating System. IN browser all these handled by WEB APIs under the hood WEB APIS gets the data from Operating system. But in Node JS/js there is not any way to access Operating system directly.
+NOTE:- whenever you want access of the system it is handled by Operating System.
+
+Some points
+-> As we have Different types of Operating System(windows,kali Linux,MacOS). All these os have Different ways to access files,timers or calling Network
+-> we can run Node js in any Operating System. But How can we access Timer related things(setTimeout(),setInterval()), File access, Network call(data fetch, connect with DB)?
+-> in Node js we have global object that has access of setTimeout,setInterval,fetch,log,DOM etc..
+-> Now the Questions is how does global object gets access of timer setInterval(cb,timer), as global object doesn't have timer. Only Operating System has access of timer.
+-> setTimeout() has its own implementation like timer ka access lena , callback function ko cb queue mei dalana ...
+-> JS is high level language. but whenever we have to interact with system we need language that can talk with the system(c,cpp)
+-> c and cpp interacts with Operating system directly
+-> here introduced Libuv:- it is a set of codes written in c programming language
+🔹 Libuv is a C++ library that makes Node.js asynchronous and non-blocking.
+🔹 It helps Node.js communicate with the Operating System (OS) to handle:
+    File system operations (fs.readFile, fs.writeFile)
+    Network requests (http.get, net.connect)
+    Timers (setTimeout, setInterval)
+    Process management (child_process.fork)
+    Thread pool for heavy tasks (crypto.pbkdf2, zlib.compress)
+-> Now libuv knows how to talk with Different operating system. V8 engine doesn't have to worry about in which operating system node js is running.
+-> node js has two things V8 engine + libuv. This is why we run node js in any operating system
+
+
+in node js
+V8 engine ---> libuv ---> Operating System ----> libuv ----> V8 engine
+
+in browser
+when we download chrome it asks me which os you are using. suppose i answer Windows then the libuv part of window gets written in the chrome browser
+
