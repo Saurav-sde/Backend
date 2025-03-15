@@ -1,0 +1,84 @@
+Client:-  jisko services chahiye
+Server:-  Jo services dega
+
+Server is of two types:-
+Hardware,software
+
+-> server is nothing but a CPU.
+-> It has all the files html,css,js,img,database,backend. 
+-> if anyone request data i have handled it by human
+-> other option is create another server which does the work of human (software server).
+
+
+why we dont make our systam a server?
+=> if i have hosted the website in our own system and anyone from outside visit this website. The Problem faced by the system is:
+    -> system has to be online 24 x 7. As we dont know when the client will sends the request
+    -> system specification must be high.
+
+-> so we don't handle the hardware related server. We have many Companies that provides this services like:- AWS(Amazon Web Services),Heroku,Vercel,Azure. All these provide hardware related services or we can say it gives their CPU as rent
+-> All these Companies has server in very huge number and all these servers are present in diffferent location
+
+
+-> My work is to create software related server
+
+
+why Servers lag sometime?
+=> In the Server where we hosted all the things the specification of that server is not good.
+
+
+Suppose i have to visit youtube.How it works?
+=> Client and server both has an IP address. First of all client sends an http request to server, then a TCP/IP connection is created also known as socket(IP + Port Number). The work of the socket is to serves us the data, After serving THis connection is removed if client again sends any request then again TCP connection is made.
+
+Suppose i visit https://coderarmy.in then DNS resolve this and get the IP address but from where we get the port number. AS without port number socket is not formed and server doesn't serves the request.  
+=> By default for http 80 port number gets assigned and for https 443
+
+Server is Listening means?
+
+
+Socket and Web Socket
+client request the server and server serves (socket) one way communication
+Problem occurs when we make chat application,lets take example of whatsapp Friend1 wants to send msg to friend2
+first of all Friend1 sends msg to whatsapp server and server sends it to the friend2.
+
+why we cant directly send to frined2 instead of server?
+This is done because if the friend2 is not online then the msg gets stored at the whatsapp server
+
+why we are not using socket here?
+Suppose frined2 has sent msg to the wp server And frined doesn't requested the server to receives that msg that friend 2 has sent the server. But Server push the msg to the Friend1 even if friend1 doesn't requested. THis could not be done if we use socket instead of it, it use webSocket
+
+in SOcket server does n't server until the client has requested, one way communication
+In webSocket serves serves even if client doesn't requested, its two way communication 
+
+
+lets create a server using node js:- 
+const http = require('http');
+
+const server = http.createServer((req,res)=>{
+    res.end("Hello Coder Army");
+});
+
+server.listen(4000,()=>{
+    console.log("I am Listening at port number 4000");
+});
+
+
+// handling routing using nodejs
+const http = require('http');
+
+const server = http.createServer((req,res)=>{
+    if(req.url === '/') 
+        res.end("Hello Coder Army");
+    else if(req.url === "/contact")
+        res.end("This is our Contact Page");
+    else if(req.url === "/about")
+        res.end("This is our About Page");
+    else
+        res.end("Page Not Found");
+});
+
+server.listen(4000,()=>{
+    console.log("I am Listening at port number 4000");
+});
+
+
+// its not necessary that server and client present in diffferent location. a single system can be client and server
