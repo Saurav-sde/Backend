@@ -1,0 +1,59 @@
+why Uber needs so many employee as it is only an app and app is also created then why need it big number of employees?
+Ans: Inside Company har baar kuch na kuch naya chalte rhta hain. Uber has So many services to handle. some of them are
+(i)Discount Team :- previous data was there present , pahele discount sb pe kasia response mila, data jo mila wo corrupted to nothing
+
+(ii) Fraud Handler :- Suppose discount team cretaed some discount. This team to make sure that koi galat fayda na utha le discount ka,money cashout wagerah na kr de, kahi koi uber driver aise to nhi jo faltu ka discoount chala rha ya usko overuse kr rha, Fraud ko detect krna by using previous fraud pattern
+
+(iii)Bill handler Team :- kitna cash mila, kitna online mila track down that money kahi ye account me anne ke wajaay beech mei ud n jaye, toll taxes handle krna, airport pe wit krna ka charges handle krna.
+
+(iv)Notification Team :- handles the notification for all the users of uber
+
+Uber Books 30-40 lakh ride per day. Uber has to maintain this huge data, as detecting fraud,creating discount,handling bill, notification all this is a huge tasks so they need a team for all these.There are also so many services which is not here
+
+
+
+How New Thing are created in company?
+Ans:- there are many stages (waterfall cycle), lets take a problem we have to vcreate a coding platform
+Requirement:- product/project Manager(MBA wale) + UI + jb code run hoga to langauages kon kon si rhegi + Paid user ka option hona chahiye
+Design:- Senior Manager(coding background se rhega), ye btayenge kis tech stack ki jarurat padegi+ lld + hld + monolethic/microservices
+Development:- frontend + backend + db
+Testing:- project test krna
+Deployment:- Devops Team
+Maintainance:- maintain krne ka , future mei bug aa gya usko shi krna 
+
+
+Can you heard the name of ONcall?
+jb project live ho usme error aa gya to us error ko jald se jald handle krna wo jimedaaro hoti hai oncall wale ki. oncall mei developers baithate hain
+on call mei duty lgti hai jisme 24/7 available rhna hota hain, yaha pe kai baar aise hoga ki enginner so nhi paate 
+
+
+
+lets discuss monlolith and microservices architecture
+monolith:- frontend,backend,db,payemntservice, authentication service,images all these things are in a same server
+cons of monolith:
+-> As we need RAM + processor for rendering frontend and backend and DB need SSD+RAM+processor, as we have only 1ram,1 processor lets suppose server is of 16gb RAM 10TB SSD, 6gb is used of frontend,4gb backend and db need 10gb sort of RAM here now we have to change the server of RAM 32gb ka ho gya and ssd bhi increase hoke 20TB ho gyi. But we not need extra SSD so here wastage of SSD is more as ssd increased paise bhi jayda lagega. If we want to scale RAM then SSD bhi scale ho jaayegi
+
+
+
+microservice:- keep Frontend,backend,DB,img,payment gateway all these in different servers. Now if we have to scale frontend then we can scale only frontend server. Here less wastage is done in comparison of Monolith.
+cons:- we have to pay for each servers
+
+
+
+
+monolith vs microservice
+single codebase in monolith but in microservices multiple codebase
+monolith is we decide to write backend in java then we have to write whole code(frontend,backend) in java but in microservice we can select different lang for frontend,backend,payemntservice,authentication...etc
+Deployment is easy in monolethic but in microservcies it is complex
+scalability is complex in monolethic but easy in microservcies
+Development is complex in monolethic and easy in microservcies
+we can't switch techstack easily in monolethic as we have switch the tech stack for every services, but in microservcies we can easily switch techstack for any services
+bug is solved easily in monolethic but is complex in microservcies
+if server of monolethic fails then user can't use any services but in microservices only the particular service doesn't work 
+Maintainance is easy in monolethic but complex in microservices 
+less cost in monolethic and ore in microservcies
+
+
+how does services talk with each other in microservcies structure
+
+when we have small users then follow monolethic structure otherwise nmicroservices
