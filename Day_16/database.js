@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 async function main() {
-  await mongoose.connect("mongodb+srv://CoderArmy:Saurav%402713@codingadda.xnskua4.mongodb.net/BookStore"); 
+  await mongoose.connect("mongodbdsf +srv://CodzccerArmy:ukmlkmklxzcgadda.xnskua4.mongodb.net/BookStore"); 
 }
 
 module.exports = main;
