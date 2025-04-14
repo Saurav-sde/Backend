@@ -1,0 +1,97 @@
+METHODS in schema validation?
+Static Functions
+
+
+
+Can we push all these code in the github repo, the answer is no beacause this code is considering all the sensitive details like db ceredential, then everyone used this db which leads to corrupt my db and also increase the db cost, another important ceredential is server key that is used in creating digital signature, if anyone takes this they can easily access any user account
+so, always do not hard code the sensitive information in the codebase.
+
+Now question is where can we store it?
+Environment Variable.
+create a .env file in the project folder and store it like below
+DB_CONNECT_KEY = "mongodb+srv://CoderArmy:Saurav%402713@codingadda.xnskua4.mongodb.net/Instagram"
+SECRET_KEY = "Saurav@1341"
+PORT = 3000
+use it by writting process.env.DB_CONNECT_KEY like this.
+
+Now push every file except node_modules and .env
+
+Is Environment Variable used for only this?
+it is used when we have to test the code we only have change the thing in Environment variable file not the whole code, as for testing we have given a different database , different server key and different port number. beacause we can't directly push the code in running website before testing.
+
+What is this process.env?
+it is a global object. 
+How does all the keys written in .env file is getting embed with this global object(process.env)?
+npm i dotenv. this dependency is doing all the works , require('dotenv').config() just write this in main file here it is index.js
+
+
+// Routing in express
+Now if we any application then there will atleaast 40-50 APIs endpoints, can we write all this in indx.js file, if we write our main file looks messy.
+Suppose we have some routing :-
+-> register,login,logout
+-> user/feed, user/edit, user/delete
+-> comment, comment/delete, comment/edit
+-> story/upload, story/delete, story/like
+
+We can do grouping here authentication (register,login,logout), user(user/feed, user/edit, user/delete),similarly comment and story
+for grouping create a folder named routes inside this create file for authentication, user, comment, story. below is the example
+
+const express = require ('express');
+const bcrypt = require("bcrypt");
+const User = require("../Models/users");
+const validUser = require("../utils/validateUser");
+
+const authRouter = express.Router();
+// register the user
+authRouter.post("/register",async (req,res) =>{
+    try {
+        // first validate the user
+        validUser(req.body);
+
+        // converting password in hashed form
+        req.body.password = await bcrypt.hash(req.body.password,10);
+        await User.create(req.body);
+        res.send("User Registered Successfully");
+    } catch (err) {
+        res.send("Error "+ err.message);
+    }
+})
+
+authRouter.post("/login",async(req,res)=>{
+    try {
+        // const people = await User.findById(req.body._id); // we can't use this becauser user doesn't know the uid instead of it we can use emailID as it is unique in the db.
+
+        const people = await User.findOne({emailId: req.body.emailId});
+
+        if(!(req.body.emailId === people.emailId))
+            throw new Error("Invalid Credentials");
+
+        const isAllowed = people.verifyPassword(req.body.password);
+        if(!isAllowed)
+            throw new Error("Invalid Credentials");
+
+        // jwt token
+        const token = people.getJWT();
+        res.cookie("token",token);
+
+        res.send("Login Successfully");
+    } catch (err) {
+        res.send("Error "+ err.message);
+    }
+})
+
+module.exports = authRouter;
+
+after this simply import it,
+const authRouter = require("./routes/auth");
+const userRouter = require("./routes/user");
+
+app.use("/",authRouter);
+app.use("/",userRouter);
+
+Now suppose user hit "/user" how did it search for this api, first it goes to authRouter as / is matching , then find is there /user is present or not if not then go to userRouter and search there.
+
+Better soln for this if we go in authRouter then there is not any initial match ("/register", "/login", "/logout") but in userRouter("/user"-> get,/user/:id, "/user"-> patch req) there is initial match of   /user so we can write
+app.use("/",authRouter);
+app.use("/user",userRouter);
+now in userRouter we can simply write ("/" -> get,/:id, "/"-> patch req) as it is already came in /user

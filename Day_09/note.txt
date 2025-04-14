@@ -1,0 +1,4 @@
+authentication and authorization difference
+
+authentication means verify the identity
+authorization means mere pass kya kya power hain

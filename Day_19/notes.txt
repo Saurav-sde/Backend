@@ -1,0 +1,31 @@
+we have to manually write logic for validate email, length is in the range or not, password is strong or not. 
+for all this we can use a library named validator.js , npm i validator
+ 
+now i have registered and logged in instagram.
+now i have to do chat with rohit negi, then i send req to ig server to open the rohit negi chat then how will ig server verify that this req is send by the original user not any hacker or another user? how did it authenticate the original user
+
+solution:-
+in previous days, we send the username and password on every request so that server verify, the problem is in this solution is that we have to call database every time to verify the username and password, which increase the bill
+
+another solution is we can use session Id, 
+when user login in ig then that time ig server give a session id and now in future if user request anything they have to bring the session id to the server and by this server verify, server maintain a record book for the session id and this recordbook is stored either in server or in db if it is db then again on each req db gets called, if it store in server then we know that there is not a single server of ig it has multiple server, so it has to send this reord book to all ther servers.
+
+These session id is very crucial if anyone receive this session id then he also receive all the response fro every req he do
+
+is there any solution where we don't have to maintain this record book
+here Digital Signature came in the world
+lets take an example
+supoose a user sends a msg to the bank that transfer 100rs to mohit, then how did the bank verify that this message is not tampered (isko kisi ne 100 se 200 nhi kiya, mohit ke jagah sohan nhi kiyaa), this is known as message integrity. how did we maintain the msg integrity , for this we use hashing, now this msg and hased code both gets transferred to bank server after that server convert the msg into hashed code and then compare it with the hashed code that user has send, if it matches then server confirms that this msg is not tampered. 
+
+Now msg integrity is maintained but how did it confirm that this msg is send by the original user not by someone else
+this problem is solved by the digital Signature
+for this we use key, we have two keys private and public key, private key(known by the owner) kept secret and public key (shared with everyone), every use has both the keys.
+if the message is encrypted by private key then it only be decrypted using public key and if the msg is encrypted using public then it is decrypted using private
+now suppose A is sending a msg to bank that transfer 100rs to mohit this gots hashed , now it encrypt the hashcode with pvt key of A, now this msg gets transferred to the bank
+Now bank will verify it by decrpyting the encrypted hashcode by public key of A, then bank gets the actual hashcode and then it convert the msg in hash code if the hashcode is same , then banks verified that this msg is not tampered and this is send by the A only. 
+
+now suppose hacker gets this msg and encrypted hashcode, then hacker changed the msg and decrypt the encrypted hashcode and got the actual hashcode , now he changed the msg gets the hashocde of the chnaged msg and then send it to the bank, now bank decrypt this hashcode by public key of A, convert the msg in hashed code and then compare but it doesn't matches. Because the hashedcode that hacker has send doesn't encrypted using pvt key of A , so it is decrypted in some random value instead of original one 
+
+
+Digital signature confirms that message is not tampered and it is send by the original client only.
+

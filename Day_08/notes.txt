@@ -1,0 +1,131 @@
+
+
+Can we send multiple response? ans is no as when client has requested from server it creates tcp connection and then send the response now we can't send another resppoonse without the request from the client so we can only send one response
+app.use("/user",(req,res)=>{
+    res.send("Hello Ji");
+    res.send("Mein Badhiya Hoon!!");
+}) error here
+
+now suppose if we can't response then what happens?
+app.use("/user",(req,res)=>{
+    
+})
+here client send multiple requests until the response is not send after some time client stops if server is not responding
+
+
+
+app.use("/user",(req,res)=>{
+    res.send("Hello Ji");
+},
+(req,res)=>{
+    res.send("Hello I am Second");
+})
+// it sends only Hello Ji beacuse here only 1st function is excuted.Dont think that if res is send that why 2nd didn't run.  res.send doesn't means that it comes outside the function like return statement.. it is just sending the response
+app.use("/user",(req,res)=>{
+    console.log("first");
+    res.send("Hello Ji");
+    console.log("First First");
+},
+(req,res)=>{
+    res.send("Hello I am Second");
+})
+// it prints first and first first when we request 
+
+// how can we call this 2nd function? , we have another parameter i.e next
+app.use("/user",(req,res,next)=>{
+    console.log("first");
+    res.send("Hello Ji");
+    console.log("First First");
+    next();
+},
+(req,res)=>{
+    console.log("Second);
+    res.send("Hello I am Second");
+})
+// still it gives error as we dont send 2 response so we have to remove 1 response
+app.use("/user",(req,res,next)=>{
+    console.log("first");
+    next(); // stores the reference of next function
+},
+(req,res)=>{
+    console.log("Second);
+    res.send("Hello I am Second");
+})
+
+// the function that we are making like this is known as Route handler
+
+
+// we can wrap all the route handler inside an array
+app.use("/user",[(req,res,next)=>{
+    console.log("first");
+    next();
+},
+(req,res,next)=>{
+    console.log("Second");
+    next();
+},
+(req,res,next)=>{
+    console.log("Third");
+    // res.send("Hello I am Third");
+    next();
+},
+(req,res,next)=>{
+    console.log("Fourth");
+    res.send("Hello I am Fourth");
+}])
+// app.use(route,RH,RH,RH,RH,RH.....)
+// app.use(route,[RH,RH,RH,RH,RH.....])
+// app.use(route,RH,[RH,RH,RH],RH.....)
+
+// we can also write it alag alag krke and work same like above
+app.use("/user",(req,res,next)=>{
+    console.log("first");
+    next();
+})
+
+app.use("/user",(req,res,next)=>{
+    console.log("Second");
+    next();
+})
+
+app.use("/user",(req,res,next)=>{
+    console.log("Third");
+    // res.send("Hello I am Third");
+    next();
+})
+
+app.use("/user",(req,res,next)=>{
+    console.log("Fourth");
+    res.send("Hello I am Fourth");
+})
+// what is middleware here:- jo beech mein hain, first three is middleware and 4th one is request/route handler
+middleware->middleware->middleware->request handler
+
+middleware is nothing but it only does some opearation and passed it to different middlewares or request handler
+
+
+use case of middleware?
+authentication, maintaining logs and many more...
+
+
+
+app.get("/user",(req,res)=>{
+    console.log(`${Date.now()} ${req.method} ${req.url}`);
+    
+    res.send("Info About User");
+})
+
+app.post("/user",(req,res)=>{
+    console.log(`${Date.now()} ${req.method} ${req.url}`);
+    res.send("Info saved");
+})
+
+app.delete("/user",(req,res)=>{
+    console.log(`${Date.now()} ${req.method} ${req.url}`);
+    res.send("Info deleted");
+})
+
+app.listen(3000,()=>{
+    console.log("Listening at port 3000");
+})  
+// here same code is repeatiting     console.log(`${Date.now()} ${req.method} ${req.url}`);  so we use middleware here

@@ -1,0 +1,19 @@
+app.get("/user", async(req,res) =>{
+    try {
+        // validate the user
+        const {token} = req.cookies;
+        if(!token)
+            throw new Error("Token doesn't exists");
+        const payload = jwt.verify(token,"Saurav@1341"); 
+        const {_id} = payload;
+        if(!_id)
+            throw new Error("Id is Missing");
+        const result = await User.findById(_id);
+        res.send(result);
+    } catch (err) {
+        res.send("Error "+ err.message);
+    }
+}) 
+
+now each APIs endpoint i have to authenticate the user, so same code is being written in each endpoints and this is not a good practice.
+we can use middleware here

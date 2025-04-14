@@ -1,0 +1,81 @@
+what is data validation and why we need it??
+const userSchema = new Schema({
+    name:String,
+    age:Number,
+    city:String,
+    gender:String
+}) 
+here, we haven't giuven any validation and someone has given username of 1lakh size and all these will harm the database
+
+suppose i have a model named User
+User.create() :- write a document in database
+User.find() :- Read all the document
+User.findById(ID) :- find and return the document that has given ID
+User.findByIdAndDelete(ID) :- find the documnet by the given id and delete it from the database
+User.findByIdAndUpdate(id,update) :- find the document by id and then change the given field 
+
+
+lets move to schema validation
+what do we mean by validation?
+supose we are making databse of Instagram and we want those who want to use instagram must be above age of 13. fo this we can simply write min:14 in our schema, now if the user whose age is less than 14 will not enter in our database
+// similarly there is max, max:70 now the user above 70 will not use the instagram
+
+// some schema types
+required: true -> used when we want any field that is must to give the user 
+suppose we have written required:true in username and email, now user must have to give username and email so that they will register in the instagram
+
+unique:true/false :- used when we want any field to be unique in the database , suppose user with same email Id doesn't register in our instagram
+
+minLength: and maxLength: -> used when we want size of any string field should be in a specified range
+
+default:value -> used when we want to give a default value to any field
+
+trim:true  -> used when we want to trim the spaces given by the user suppose in emailId "     saurav@gmail.com     ";
+
+lowercase: true -> used when we want any field to be stored in lowercase
+
+
+// now suppose we have created a field named gender that only expects value male,female and others but user gave somethine else like hasjdifhks,lkfodp. Then it this situation we have to validate the given input by the user. for this we can use enum
+enum:["male","female","others"] --> now user can give only thse three and anything other than this will give error
+
+Instead os enum , we have a validator function 
+    gender:{
+        type:String,
+        validate(value){
+            if(!["male","female","others"].includes(value))
+                    throw new Error("Invalid Gender");
+        }
+    }
+
+
+
+now suppose i want to update the data in the db, suppose i want to change the gender of a document from male to smale if we hit this request then it changes the documnet gender but here we can see the gender(smale) is invalid and we have also used validator then why did this happen??
+so, whenever we update any thing then we have to say that please check all the validation before updating
+
+so, in our patch request we have a option where we have to do runValidators:true
+app.patch("/user",async (req,res) =>{
+    try {
+        const {_id:id, ...update} = req.body;
+        await User.findByIdAndUpdate(id,update,{"runValidators":"true"});
+        res.send("Updated Successfully");
+    } catch (err) {
+        res.send("Error "+ err.message);
+    }
+})
+
+
+
+// we have a timestamp it is very necessary as we have store sometime when a prticular is created in our db and when did he updated their data
+const userSchema = new Schema({},{timestamps:true})
+
+
+immutable:true -> used when we want any field can't be changed
+now suppose i have used this in emailId feild now when we changes the field by sending patch req it doesn't changes the emailId but also it doesn't not throws any error but it has to throw an error
+till now we are validating in schema level now we have to validate in API level
+
+why we need API level validation??
+API level validation means validate the data/input before calling the db.The Main reason We need this Validation so that Database can't gets called unnecessary as we have to pay the bill of database as all the queries that we are using takes time and it increase the bill of the database
+
+when we do API level Validation, It gives us some adavantage
+first davantage is that user gets response immediately
+second adavantage is we are preventing database from unnecessary calling

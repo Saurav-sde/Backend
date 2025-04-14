@@ -1,0 +1,6 @@
+as we can parse using JSON.parse() then why did we parse using express.json()???
+
+as when data comes from frontend it comes in the foprm of stream it means thoda thoda krke ata hai but json.parse() requires wholw dATA THEN IT CAN PARSE But express can work with stream
+
+
+What is Database??

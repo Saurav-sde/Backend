@@ -1,0 +1,54 @@
+If someone has JWT tokens then they can simply use your account without username and password
+JWT tokens is stored in the form of cookies
+
+in last class we have discussed about digital signature
+(i) content - hashcode
+(ii) Encrypt the hashcode
+and the result is digital signature
+
+JWT is JSON Web Tokens.  
+Till now the problem is that if user has logged in one time then he don't need to send their ceredentials again and again on evry request. So server give them a token when user logged in. and from now every req that user dend they will send this token also, and this token is know JWT.
+JWT is stateless means we don't have to store any information about this in the db.
+
+JWT token sees like:-  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30
+
+JWT token has 3 fields:- header.payloads.digitalSignature
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9:- header
+eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0:- payload
+KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30:- digital signature
+
+in JWT tokens we store the information about the user. can't store sensitive information in JWT token like password.
+
+payload:- Suppose client hits "/chat" then how did server know that whose chat is the client is requesting, we can gets this by sending the username in the req by usding query parameters ("/chat/rohitnegi_09), another method is to get this in form of cookie, means add username inside payload
+payload:{user_name:"rohitnegi",emailId:"rohit@gmail.com"}.
+we are doing in this way because in future if user wants something like chat then by seeing jwt token server load the chat, or user want to see the profile then server see the jwt token and from payloads server get the username and from that server loads the profile of the user.
+
+Digital signature:- first it hash the (header + payload) after that it encrypts the hashed code using server key or secret key. and the final encrypted code is known as digital signature.
+
+Header is nothing it just simply store which algo it is uding and its type
+{
+    "alg":"HS256",
+    "typ": "JWT"
+}
+
+Now Hacker can only copy the header and the payload but it can't copy the digital signature as key which is used for encrypting is only at server.
+
+
+How did server verify that this is the JWT token that i have generated?
+client sends the JWT token, server extract header and payload from there then server hash (header + payload) then encrypt it using server key after that server compare this encrypted code to jwt Token that client has send. if it matched then it confirms that server has genrated this token, if not then server throws an error
+
+
+Now the question is in JWT token header and payload is encrypted or not?
+no they are neither encrtypted nor hashed, if we hash it then server can't get back the payload and header so server can't verify the digital signature. it is simply encoded in base64
+only digital signature is hashed and encrypted, it ensures that header and payload is not tampered.
+
+Now the question is shall we have to do expiry for JWT tokens ?
+suppose hacker gets this token if it don't expire, then hacker can use it for lifetime. so it has to be an expiry date.
+In some applications like instagram, linkedin , if we logged in then it never log me out but in some application like gfg, leetcode they logged me out after some days.
+so we can say it totally depends on the programmer if we want the token to expire or not, if we fixed expiry date like after 30min, 1day it will expire then token gets expire after the given time, if programmer hasn't given the expiry date then token can't get expired
+
+
+
+cookie-editor
+npm i cookie-parser
+npm i jsonwebtoken

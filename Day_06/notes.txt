@@ -1,0 +1,86 @@
+HTTP Method :- Get(read),Post(create),Patch/Put(update),Delete
+CRUD Operation
+
+Difference between patch and Put
+
+REST APIs
+
+Creating server using express
+
+nodemon
+
+routing in express
+app.use("/about", (req,res)=>{
+    res.send("I am Your About Page"); 
+})
+app.use("/contact", (req,res)=>{
+    res.send("I am Your Contact Page");
+})
+
+this works but when we use default page "/" then it doesnot works properly
+app.use("/", (req,res)=>{
+    res.send({"name":"saurav", "age":20,"gender":"male","contact":"6202404482"}); // sending response in json format 
+})
+
+app.use("/about", (req,res)=>{
+    res.send("I am Your About Page"); 
+})
+app.use("/contact", (req,res)=>{
+    res.send("I am Your Contact Page");
+})
+
+for every routes it is sending response of "/" default page
+epress sees "/" and think about or contact is nested inside it so it goes inside default page. to handle write default route "/" in last
+
+app.use("/about", (req,res)=>{
+    res.send("I am Your About Page"); 
+})
+
+app.use("/contact", (req,res)=>{
+    res.send("I am Your Contact Page");
+})
+
+app.use("/", (req,res)=>{
+    res.send({"name":"saurav", "age":20,"gender":"male","contact":"6202404482"}); // sending response in json format 
+})
+
+"/contact/person" -> I am Your Contact Page
+
+
+
+app.use("/abou?t", (req,res)=>{
+    res.send("I am Your About Page"); 
+}) 
+now u is treated as optional 
+/abot and /about -> I am Your About Page
+
+
+
+app.use("/abou+t", (req,res)=>{
+    res.send("I am Your About Page"); 
+})
+about,abouut,abouuut,abouuuut... -> I am Your About Page
+
+
+
+app.use("/abou*t", (req,res)=>{
+    res.send("I am Your About Page"); 
+})
+abouhdfkjhkdt,about,abouuuut,abouiuwerit.... -> I am Your About Page
+
+
+? character become optional
++ character can be repeated multiple time
+* any number of character can come
+
+
+// params
+app.use("/about/:id/:user", (req,res)=>{ // for any /about/anything comes here
+    console.log(req.params); // { id: '49', user: 'saurav' } -> /about/49/saurav
+    res.send("I am Your About and user Page"); 
+})
+
+app.use("/about/:id", (req,res)=>{ // for any /about/anything comes here
+    console.log(req.params); // { id: '30' } -> /about/30
+    res.send("I am Your About Page"); 
+})

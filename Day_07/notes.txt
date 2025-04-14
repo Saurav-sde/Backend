@@ -1,0 +1,71 @@
+app.use and app.get uses get method
+
+we cant do post request from browser, we can do it from frontend and other option is postman
+
+
+app.get("/user",(req,res)=>{
+    res.send({name:"Saurav"});
+})
+
+app.post("/user",(req,res)=>{
+    console.log("Data Saved Successfully");
+    res.send("Data Saved Successfully"); 
+})
+as both are same endpoints then how did they know that it is get or post. 
+ans:- inside req, method is stored from there it knows which request is it
+
+
+app.post("/user",(req,res)=>{
+    console.log(req.body);
+    res.send("Data Saved Successfully"); 
+})
+// we have send post request but it logs undefined , but we have sent 
+{
+    "name": "Saurav",
+    "age": 30,
+    "gender": "male"
+} in body
+
+why it is printing undefined?
+=> Many people say we have to do parsing. app.use(express.json()) and it is middleware, json format se js object mei convert krta hain. but we are going to understand in detail
+
+lets understand json vs js object
+JSON:- it is string-format or we can say text-based format
+JS object :- object hain
+
+whenever we saya js object it doesn't have only the information that we have given in key:value pair it also has extra information 
+now the question is any other language understand JS object because server may be written in java,pythom,cpp.. or any other lang , frontend is always in html,css,js. 
+suppose i have send data in js object and the server is in python then server never understand this data
+from this we can say we never send data in the form of JS object and JSON is different from js.
+Now we have to create a universal format so that every server(cpp,js,java,python...) can understand it
+There are many format like this which can be understand by every lang:- XML,JSON
+JSON looks like JS object but it is not js Object
+
+some difference
+in JSON key is in "name":"Saurav" but in js object name:"Saurav"
+in js object we can give extra comma after last key:value pair {"name":"saurav","age":30,} but in JSON not {"name":"saurav","age":30} 
+we can send array in JSON [10,20,30] but in js object not
+In json we can send string,number,null,object,array but in js we can send string,number,null,object,array,undefined and function also
+we can't send undefined,function in JSON but in JS object we can
+
+from all this we can say JSON and js object utna hi similar hai jitna JS or Java me hai , mtlb kuch nhi
+
+
+lets discuss JSON.stringify()
+JSON.stringify converts js object into JSON and wrap it inside '' so that it can be seen in string format and every programming language understand string
+JSON.stringify() converts {name:"Saurav", age:30} into '{"name":"Saurav", "age":30}'
+we know data travels in form of bits(0/1)   
+AS it gots converted in string then it can easily travel from one service(frontend) to another(backend) or we can say from physical layer,  as converting string in 0/1 format is easy than converting js Object
+now we have to convert back in JS object(if our server is in js) so that we can use further. Parser does this work, it converts json in js object. so we use express.json() it converts json in js object
+ '{"name":"Saurav", "age":30}' ----> {name:"Saurav", age:"30"}.
+if we see it converts value of age in string instead of number this is why beacuse the data which came here is in string format so parser is unable to decide whether it is originally in string or number. so it converted this in string  
+so sometimes earlier in frontend we have used parseint so that it convert string in number
+
+
+
+Now understand Headers
+headers: 
+    {
+        'Content-Type': 'application/json' 
+    }
+inside headers it has Content-Type where we mention type of the Content like JSON,XML,HTML... here it is json

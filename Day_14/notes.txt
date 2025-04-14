@@ -1,0 +1,31 @@
+cluster 
+mogodb is just application layer that manges the database
+
+bahut saare server aapas mei milke cluster banate hain
+
+
+
+ const findResult = await collection.find({}); when we don't write toArray();
+ => connection.find() ne network call kari hi nhii as by removing await we get the same answer
+ // now the question who is doing the work of network call
+
+ const findResult = collection.find({});
+ const ans = await findResult.toArray();
+ console.log('Found documnets => ', ans);
+
+ now we get the answer. Now the question is it toArray() is doing this work?? why collection.find() didin't did it and why collection.find() is named as cursor??
+
+ // toArray() calls the network and jitna bhi documnets us collection mei hai wo sabke uthake ek arrray mei rakhta hai and then return krta hain
+ // and this is a very dangerous operation. suppose we have data of 5gb in the collection then whole 5gb array comes to the RAM and the Ram ki band baj jaayegi.
+ // isi se bachane ke liye cursor diya gya hain. cursor menas it simply points to the document one by one 
+ 
+
+ // now if we want that one by one document comes to the backend. then we can do this 
+   const findResult = collection.find({});
+   for await(const doc of findResult)
+    console.log(doc); 
+    // when we write in this formast then it calls the netowrk
+
+
+Lets move to mongoose
+    
