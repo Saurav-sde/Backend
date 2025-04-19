@@ -1,0 +1,38 @@
+lets discuss logout feature
+how can we implement it?
+first soln is return invalid JWT token to the user when user click on logout btn, now after it when user sends any req signature doesn't match so, user can't access any thing(this works because whenver server sends new token it replace the token with the new one, if server doesn't send any then it keep the previous one). 
+
+Another Solution is to expire the cookie as inside cookie jwt token is kept, so if we expire the cookie then everything got expired, and user can't access anything in future.
+res.cookie("token",null,{expires: new Date(Date.now())});
+instead of null we can send any invalid token but we haven't send here because why to increase the size of token
+
+now the question is that is user fully logged out?
+the answer is no.
+Here is a loop hole , suppose user copied the JWT token then click on logout, now after logout user sends req by the copied JWT token, now the signature got verified by the server and user access the things after logout also.
+
+we can solve this problem by keeping a list of all the token by which user logged out, in the database.
+now when user sends any request then server first search the token with the blacklisted token in db. if its not present there then server serve the user req. 
+But day by day the blocklisted token increase, so we can keep the blocklisted token in db until it expires, if token expires then we can simply remove it from database as after that if user send req with these token then also server can give them access.
+But here problem is now for every req server calls the db.
+
+Can we store this blacklisted token in RAM/Server, as if it is stored in server then server doesn't call db to check whether the token is blacklisted or not. we can use array,set or any data structure to store the blacklisted token.
+But here another headache came as we have to delete these blacklisted token when it is expired, we have to write code for deleting the token when it is expired , it is difficult to achieve it. Somehow if we can wrote the code, then also we can't able to delete it from the all servers as we know at least 3 replicas is made of each server, so we have to store and delete it from all the replicas, and all this is very difficult to achieve.
+
+To solve all this problem a new Database is introduced whose name is redis. Redis cover all these problem. Redis is very fast, if mongodb is taking (300 - 400)ms to solve any query but redis can do it in microseconds.
+How redis is doing it?
+mongodb is storing data in ssd, but redis is storing in RAM,so we can say that redis is in memory database.
+
+But we know that RAM is volatile(means it loses all stored data when the power is turned off.) so in redis we can't store the data which we have to store permanently.
+ 
+In above problem we have to store token and we know expiry date of token is temporary(like 30min, 45 min, 1day ...) so we store these tokens in RAM.
+
+we can only use Redis for cache data.
+
+In memory deosn't means the redis db is kept in nodejs server , we keep it in different server, although we can keep it same server but scalibilty issue occur. so we can't keep redis db in same server. cost of redis is higher than mongodb
+
+use case of redis:
+. suppose we went on a website and refreshed 10 time then does it call db 10 time? the answer is no. when user went on website for first time db gets called and send the data to the server and also kept that data in redis db for future reference, and server returns the data to the client. Now in future client sends req then server doesn't go to db instead of this servers returns the data from redis. we can use redis when we want most frequent data (cache data).
+
+ 
+
+ 
