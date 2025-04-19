@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 async function main() {
-  await mongoose.connect("mongodb+srv://CoderArmy:Saurav%402713@codingadda.xnskua4.mongodb.net/Instagram"); 
+  await mongoose.connect("mongodbadda.xnskua4.mongodb.net/Instagram"); 
 }
 
 module.exports = main;
