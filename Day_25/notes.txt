@@ -1,0 +1,87 @@
+Rate Limiter : whenever any user came to our website , then i fix a limit on the user that he can only sends x req in a interval of time.
+like 60 req in 1 hr.
+if we dont limit then any hacker can harm our APIs. Hacker is authenticated then also it will harm.
+
+suppose any user/hacker sends 10lakh get request to my server, then my server will crash 
+as for evry req our Ram gets used, and this may crash the db or server
+
+Now Question is how can we handle it?
+1. Token Bucket:- we make a token bucket, suppose there is 5 token in the bucket now whnever user sends req first he go to the token bucket take token from there and then he go the server by taking the token bucket, now server only serves the request when client has token of token bucket, those who came without token server can't serve them
+
+how many token we can keep in token bucket?
+no of token = no of req server handle at a time.
+
+What is the problem with this algorithm?
+Now suppose a client/ hacker send 5 lakh req at a time , so he take all the tokens from bucket and went to the server(suppose 10000 token is there), Now remaining other user i.e is genuine user has to wait due to hacker and the User experinece will fall
+
+lets discuss 2nd approach
+2. we will keep tracks of every user that how many req he/she has sent in a hour, if the req exceeds the limit that we have fixed then server can't serve him anymore. user has to wait till 1 hour completes after that he/she will send req, now also they will get only no of requests we have fixed.
+
+how can we keep track?
+id : no of req
+123:1
+123 : 2
+123 : 3  . . 123 : 60
+How can we identify the user , if he/she is registered user then i will get data from the db, but any user who doesn't registered, then how can we get his/her data
+unregisterd user can also hit my server suppose he is hitting the login page,
+so we can easily identify him/her using the IP address of the user, we can get the IP of the user from req.ip, as we know whenever user sends any msg in internet then in msg it is compulsory to send the IP of message sender and IP of msg receiver(fundamental of computer network).
+
+we can store this IP in RedisDB
+we store user ip, count of req and total time to leave in my redis db.
+Now whenever any user sends req first we check his IP in my redis DB if its there then we can simply increase the count of request if count exceeds the limit then we will rejeect his request, otherwise we will send the response.
+
+now when 1hr complete we will delete the user data from the redis db.
+now user again send the req then first we check the ip in my db it is not there then we will store it in the db and set the count to 1 and time to leave to 60min. 
+
+
+How can we apply the time interval between two requests?
+suppose i want the user to wait for 5sec to send another req, we can set the TTL to 5sec.
+now i want both that a user can send only 60 req in 1 hr, and have to wait for 10 sec to send another req. How can we achieve it?
+is we set TTL to 10sec, then he can send 360 req in 1hr, but we don't want that, we want that user can only sent 60 req in 1hr.
+so we will achieve it by storing the timeframe of last req that user has sent.
+Ip: 12.1.1.12
+count: 5
+tomeofLastReq: 12.01:15
+TTL:60min
+Now whenver any user sent the req first we will check his IP in my redisDb , if its not there then we can store this ip,count=1,time, TTL. if the user is in the db then we can simply check the count of the req then we can check the time b/w the last req and this req if it is 10sec then we will change the lastResTime to currenttime.
+
+How can we store all these?
+IP as key , value = "count:time"
+The algorithm which we have used is knows as Fised Window Algorithm.
+
+const redisClient = require('../config/redis'); 
+
+
+// redisClient.incr(ip) it wil increase the count if ip exist otherwise create it and then returns the count 
+// stores ip as a key
+
+const rateLimiter = async(req,res,next) =>{
+    try {
+        const ip = req.ip;
+        const number_of_req = await redisClient.incr(ip);
+
+        if(number_of_req > 60)
+            throw new Error("User Limit Exceeded");
+        
+        if(number_of_req == 1)
+            await redisClient.expire(3600);    
+
+        next();
+
+    } catch (err) {
+        res.send("Error: "+err);
+    }
+}
+
+module.exports = rateLimiter;
+
+
+
+3. Sliding window Algorithm :  Now suppose any user sent req at 12pm , agli req 12:05pm , now this window slides. 
+in starting window is from 12PM to 1AM , after 2nd req window is 12:05PM to 1:05AM.
+In fixed window user send 60req in 1hr , now suppose in 12:59AM sends 59request, at 1:01 again sends 60request
+Here we can see that within2 min user send 119 requests , this will harm my server.
+
+it has to be like this: at 12:59 user hit 59 req then till 1:59 user can only send 1 req , so we have to slide the window.
+
+Now can it is the best solution to store count on the basis of IP as we know in places like College all the student uses same wifi and they share same public IP .
