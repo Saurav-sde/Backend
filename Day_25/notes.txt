@@ -84,4 +84,3 @@ Here we can see that within2 min user send 119 requests , this will harm my serv
 
 it has to be like this: at 12:59 user hit 59 req then till 1:59 user can only send 1 req , so we have to slide the window.
 
-Now can it is the best solution to store count on the basis of IP as we know in places like College all the student uses same wifi and they share same public IP .
